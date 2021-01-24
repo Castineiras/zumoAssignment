@@ -18,16 +18,23 @@ namespace zumoAssignmentGUI
         public Form1()
         {
             InitializeComponent();
+            zumoPort.Open();
         }
 
         private void OpenPortButton_Click(object sender, EventArgs e)
         {
-            zumoPort.Open();   
+            if (!zumoPort.IsOpen)
+            {
+                zumoPort.Open();
+            }
         }
 
         private void ClosePortButton_Click(object sender, EventArgs e)
         {
-            zumoPort.Close();
+            if (zumoPort.IsOpen)
+            {
+                zumoPort.Close();
+            }
         }
 
         private void ForwardButton_Click(object sender, EventArgs e)

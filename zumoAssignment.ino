@@ -1,31 +1,38 @@
 #include <Zumo32U4.h>
 
+Zumo32U4Motors motors;
+
 void setup() 
 {
-  
+  Serial.begin(9600);
+  Serial1.begin(9600);
+  motors.setSpeeds(0, 0);
 }
 
 void loop() 
 {
-  if (Serial.available() > 0)
+  if (Serial1.available() > 0)
   {
-    String command = Serial.readString();
+    String commandString = Serial1.readString();
+    char command = commandString[0];
     
     switch (command)
     {
-      case "forward":
+      case 'f':
+        motors.setSpeeds(50, 50);
         break;
         
-      case "back":
+      case 'b':
         break;
         
-      case "left":
+      case 'l':
         break;
         
-      case "right":
+      case 'r':
         break;
         
-      case "stop":
+      case 's':
+        motors.setSpeeds(0, 0);
         break;
 
       default:
