@@ -9,7 +9,6 @@ int turnSpeed = 85;
 
 void setup() 
 {
-  Serial.begin(9600);
   Serial1.begin(9600);
   motors.setSpeeds(0, 0);
   turnSensorSetup();
