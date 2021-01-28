@@ -84,7 +84,7 @@ namespace zumoAssignmentGUI
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(150, 75);
             this.StopButton.TabIndex = 4;
-            this.StopButton.Text = "Stop";
+            this.StopButton.Text = "Start/Stop";
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
