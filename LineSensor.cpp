@@ -23,5 +23,5 @@ void calibrateSensors()
 
 bool isAtCorner()
 {
-  return (lineSensorValues[1] > sensorThreshold / 2 && lineSensorValues[2] > sensorThreshold && lineSensorValues[3] > sensorThreshold / 2)
+  return (lineSensorValues[1] > sensorThreshold / 2 && lineSensorValues[2] > sensorThreshold && lineSensorValues[3] > sensorThreshold / 2);
 }
