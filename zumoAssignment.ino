@@ -48,14 +48,23 @@ void loop()
   }
   else if (isRunning) // isRunning should be true when moving forward autonomously. Keeps the Zumo from travelling outside the boundaries of the maze.
   {
+    // Block of code works by effectively following the white area inside the maze, in order to avoid the boundaries.
+    // Gets the position of the line to be followed.
     int position = lineSensors.readLine(lineSensorValues, true, true);
+
+    // Error is how far the zumo is from the centre of the line, corresponds to position 2000.
     int error = position - 2000;
+
+    // Gets the speed difference to be used between each motor, which will decide what direction it should turn.
     int speedDifference = error / 4 + 6 * (error - lastError);
+    
     lastError = error;
 
+    // Set the speeds of the left and right motors, taking into account the speed difference.
     int leftSpeed = moveSpeed + speedDifference;
     int rightSpeed = moveSpeed - speedDifference;
 
+    // Contrains the motor speeds between 0 and the actual movement speed of the robot normally.
     leftSpeed = constrain(leftSpeed, 0, moveSpeed);
     rightSpeed = constrain(rightSpeed, 0, moveSpeed);
 

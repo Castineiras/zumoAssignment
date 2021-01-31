@@ -21,6 +21,8 @@ void calibrateSensors()
   motors.setSpeeds(0, 0);
 }
 
+// Checks to see if the zumo is at a corner, by seeing if it has a wall directly in front of it. Checks if a line is detected under the centre 3 sensors.
+// The outer 2 of these 3 sensors check for a lower value in case the Zumo arrives at the corner at an odd angle.
 bool isAtCorner()
 {
   return (lineSensorValues[1] > sensorThreshold / 2 && lineSensorValues[2] > sensorThreshold && lineSensorValues[3] > sensorThreshold / 2);
