@@ -30,8 +30,13 @@ void setup()
 //------------Main Loop-------------
 //----------------------------------
 void loop() 
-{    
-  if (Serial1.available() > 0) // Only execute if something is sent through the serial.
+{ 
+  if (isAtCorner()) // If a wall is detected directly in front of the Zumo, stop all movement and notify the user through the serial port. 
+  {
+    isRunning = false;
+    motors.setSpeeds(0, 0);
+  }
+  else if (Serial1.available() > 0) // Only execute if something is sent through the serial.
   {
     String commandString = Serial1.readString();
     char command = commandString[0];
@@ -92,29 +97,24 @@ void manualControl(char command)
 
     // Turn the robot to the left 90 degrees.
     case 'l':
-      turnSensorReset();
-      motors.setSpeeds(-turnSpeed, turnSpeed);
-      while((int32_t)turnAngle < turnAngle90)
-      {
-        turnSensorUpdate();
-      }
+      turnLeft();
       motors.setSpeeds(0, 0);
       break;
 
     // Turn the robot to the right 90 degrees.
     case 'r':
-      turnSensorReset();
-      motors.setSpeeds(turnSpeed, -turnSpeed);
-      while((int32_t)turnAngle > -turnAngle90)
-      {
-        turnSensorUpdate();
-      }
+      turnRight();
       motors.setSpeeds(0, 0);
       break;
 
     // Stop all current movement of the robot.
     case 's':
       motors.setSpeeds(0, 0);
+      break;
+
+    // Swap control schemes for the zumo.
+    case 'x':
+      isAutonomous = !isAutonomous;
       break;
 
     // Default case, should never be executed.
@@ -127,43 +127,54 @@ void autonomousControl(char command)
 {
   switch (command)
   {
-    // Start autonomous forward movement.
-    case 'f':
-      isRunning = true;
+    // Start or stop autonomous forward movement.
+    case 's':
+      isRunning = !isRunning;
       break;
 
     // Turn the robot to the left 90 degrees.
     case 'l':
-      turnSensorReset();
-      motors.setSpeeds(-turnSpeed, turnSpeed);
-      while((int32_t)turnAngle < turnAngle90)
-      {
-        turnSensorUpdate();
-      }
+      turnLeft();
       isRunning = false;
       motors.setSpeeds(0, 0);
       break;
 
     // Turn the robot to the right 90 degrees.
     case 'r':
-      turnSensorReset();
-      motors.setSpeeds(turnSpeed, -turnSpeed);
-      while((int32_t)turnAngle > -turnAngle90)
-      {
-        turnSensorUpdate();
-      }
+      turnRight();
       isRunning = false;
       motors.setSpeeds(0, 0);
       break;
 
-    // Stop all current movement of the robot.
-    case 's':
-      isRunning = false;
-      motors.setSpeeds(0, 0);
+    // Swap control schemes for the zumo.
+    case 'x':
+      isAutonomous = !isAutonomous;
       break;
 
     // Default case, should never be executed.
     default:
       break;
+  }
+}
+
+// Execute a 90 degree left turn.
+void turnLeft()
+{
+  turnSensorReset();
+  motors.setSpeeds(-turnSpeed, turnSpeed);
+  while((int32_t)turnAngle < turnAngle90)
+  {
+    turnSensorUpdate();
+  }
+}
+
+// Execute a 90 degree right turn.
+void turnRight()
+{
+  turnSensorReset();
+  motors.setSpeeds(turnSpeed, -turnSpeed);
+  while((int32_t)turnAngle > -turnAngle90)
+  {
+    turnSensorUpdate();
   }
 }

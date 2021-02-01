@@ -21,22 +21,6 @@ namespace zumoAssignmentGUI
             zumoPort.Open();
         }
 
-        private void OpenPortButton_Click(object sender, EventArgs e)
-        {
-            if (!zumoPort.IsOpen)
-            {
-                zumoPort.Open();
-            }
-        }
-
-        private void ClosePortButton_Click(object sender, EventArgs e)
-        {
-            if (zumoPort.IsOpen)
-            {
-                zumoPort.Close();
-            }
-        }
-
         private void ForwardButton_Click(object sender, EventArgs e)
         {
             zumoPort.Write("forward");
@@ -60,6 +44,11 @@ namespace zumoAssignmentGUI
         private void StopButton_Click(object sender, EventArgs e)
         {
             zumoPort.Write("stop");
+        }
+
+        private void SwitchControlButton_Click(object sender, EventArgs e)
+        {
+            zumoPort.Write("x");
         }
     }
 }
