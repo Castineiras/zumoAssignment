@@ -35,6 +35,7 @@ void loop()
   {
     isRunning = false;
     motors.setSpeeds(0, 0);
+    Serial1.write("Corner Detected: Please select a direction to turn.");
   }
   else if (Serial1.available() > 0) // Only execute if something is sent through the serial.
   {

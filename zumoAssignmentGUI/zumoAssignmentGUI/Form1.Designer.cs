@@ -42,8 +42,11 @@ namespace zumoAssignmentGUI
             this.TurnLeftButtonA = new System.Windows.Forms.Button();
             this.TurnRightButtonA = new System.Windows.Forms.Button();
             this.SwitchControlButton = new System.Windows.Forms.Button();
+            this.SerialMonitorGroup = new System.Windows.Forms.GroupBox();
+            this.SerialTextBox = new System.Windows.Forms.RichTextBox();
             this.ManualControlGroup.SuspendLayout();
             this.AutonomousControlGroup.SuspendLayout();
+            this.SerialMonitorGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // ForwardButton
@@ -145,7 +148,6 @@ namespace zumoAssignmentGUI
             // 
             // RoomLeftButton
             // 
-            this.RoomLeftButton.Enabled = false;
             this.RoomLeftButton.Location = new System.Drawing.Point(18, 17);
             this.RoomLeftButton.Name = "RoomLeftButton";
             this.RoomLeftButton.Size = new System.Drawing.Size(150, 75);
@@ -183,11 +185,31 @@ namespace zumoAssignmentGUI
             this.SwitchControlButton.UseVisualStyleBackColor = true;
             this.SwitchControlButton.Click += new System.EventHandler(this.SwitchControlButton_Click);
             // 
+            // SerialMonitorGroup
+            // 
+            this.SerialMonitorGroup.Controls.Add(this.SerialTextBox);
+            this.SerialMonitorGroup.Location = new System.Drawing.Point(12, 310);
+            this.SerialMonitorGroup.Name = "SerialMonitorGroup";
+            this.SerialMonitorGroup.Size = new System.Drawing.Size(594, 313);
+            this.SerialMonitorGroup.TabIndex = 10;
+            this.SerialMonitorGroup.TabStop = false;
+            this.SerialMonitorGroup.Text = "Serial Monitor";
+            // 
+            // SerialTextBox
+            // 
+            this.SerialTextBox.Location = new System.Drawing.Point(6, 19);
+            this.SerialTextBox.Name = "SerialTextBox";
+            this.SerialTextBox.ReadOnly = true;
+            this.SerialTextBox.Size = new System.Drawing.Size(582, 288);
+            this.SerialTextBox.TabIndex = 0;
+            this.SerialTextBox.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1268, 635);
+            this.Controls.Add(this.SerialMonitorGroup);
             this.Controls.Add(this.SwitchControlButton);
             this.Controls.Add(this.AutonomousControlGroup);
             this.Controls.Add(this.ManualControlGroup);
@@ -195,6 +217,7 @@ namespace zumoAssignmentGUI
             this.Text = "Form1";
             this.ManualControlGroup.ResumeLayout(false);
             this.AutonomousControlGroup.ResumeLayout(false);
+            this.SerialMonitorGroup.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -214,6 +237,8 @@ namespace zumoAssignmentGUI
         private System.Windows.Forms.Button TurnLeftButtonA;
         private System.Windows.Forms.Button TurnRightButtonA;
         private System.Windows.Forms.Button SwitchControlButton;
+        private System.Windows.Forms.GroupBox SerialMonitorGroup;
+        private System.Windows.Forms.RichTextBox SerialTextBox;
     }
 }
 
