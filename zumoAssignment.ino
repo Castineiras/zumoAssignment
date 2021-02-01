@@ -31,7 +31,7 @@ void setup()
 //----------------------------------
 void loop() 
 { 
-  if (isAtCorner()) // If a wall is detected directly in front of the Zumo, stop all movement and notify the user through the serial port. 
+  if (isAutonomous && isAtCorner()) // If a wall is detected directly in front of the Zumo, stop all movement and notify the user through the serial port. Ignore if in manual control mode.
   {
     isRunning = false;
     motors.setSpeeds(0, 0);
