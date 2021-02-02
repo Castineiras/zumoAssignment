@@ -31,11 +31,12 @@ void setup()
 //----------------------------------
 void loop() 
 { 
-  if (isAutonomous && isAtCorner()) // If a wall is detected directly in front of the Zumo, stop all movement and notify the user through the serial port. Ignore if in manual control mode.
+  lineSensors.read(lineSensorValues); // Must be called before using lineSensorValues in isAtCorner().
+  if (isRunning && isAutonomous && isAtCorner()) // If a wall is detected directly in front of the Zumo, stop all movement and notify the user through the serial port. Ignore if in manual control mode.
   {
     isRunning = false;
     motors.setSpeeds(0, 0);
-    Serial1.write("Corner Detected: Please select a direction to turn.");
+    Serial1.write("Corner Detected: Please select a direction to turn. \n"); // Must have \n at the end, as UI looks for this when receiving messages.
   }
   else if (Serial1.available() > 0) // Only execute if something is sent through the serial.
   {
@@ -130,7 +131,7 @@ void autonomousControl(char command)
   {
     // Start or stop autonomous forward movement.
     case 's':
-      isRunning = !isRunning;
+      startStop();
       break;
 
     // Turn the robot to the left 90 degrees.
@@ -161,6 +162,7 @@ void autonomousControl(char command)
 // Execute a 90 degree left turn.
 void turnLeft()
 {
+  Serial1.write("Turning Left \n");
   turnSensorReset();
   motors.setSpeeds(-turnSpeed, turnSpeed);
   while((int32_t)turnAngle < turnAngle90)
@@ -172,10 +174,25 @@ void turnLeft()
 // Execute a 90 degree right turn.
 void turnRight()
 {
+  Serial1.write("Turning Right \n");
   turnSensorReset();
   motors.setSpeeds(turnSpeed, -turnSpeed);
   while((int32_t)turnAngle > -turnAngle90)
   {
     turnSensorUpdate();
+  }
+}
+
+void startStop()
+{
+  isRunning = !isRunning;
+  if (isRunning)
+  {
+    Serial1.write("Moving \n");
+  }
+  else
+  {
+    Serial1.write("Stopping \n");
+    motors.setSpeeds(0, 0);
   }
 }
