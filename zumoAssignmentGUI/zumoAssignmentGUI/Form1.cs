@@ -19,6 +19,7 @@ namespace zumoAssignmentGUI
         {
             InitializeComponent();
             zumoPort.Open();
+            zumoPort.DataReceived += new SerialDataReceivedEventHandler(SerialPortDataReceived);
         }
 
         private void ForwardButton_Click(object sender, EventArgs e)
@@ -49,6 +50,14 @@ namespace zumoAssignmentGUI
         private void SwitchControlButton_Click(object sender, EventArgs e)
         {
             zumoPort.Write("x");
+        }
+
+        private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            Invoke(new Action(() =>
+            {
+                SerialTextBox.Text += zumoPort.ReadLine() + "\n";
+            }));
         }
     }
 }
