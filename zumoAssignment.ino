@@ -183,6 +183,7 @@ void turnRight()
   }
 }
 
+// Alternates between start and stopped states for the Zumo
 void startStop()
 {
   isRunning = !isRunning;
