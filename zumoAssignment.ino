@@ -34,9 +34,9 @@ void loop()
   lineSensors.read(lineSensorValues); // Must be called before using lineSensorValues in isAtCorner().
   if (isRunning && isAutonomous && isAtCorner()) // If a wall is detected directly in front of the Zumo, stop all movement and notify the user through the serial port. Ignore if in manual control mode.
   {
+    Serial1.write("Corner Detected \n"); // Must have \n at the end, as UI looks for this when receiving messages.
     isRunning = false;
-    motors.setSpeeds(0, 0);
-    Serial1.write("Corner Detected: Please select a direction to turn. \n"); // Must have \n at the end, as UI looks for this when receiving messages.
+    motors.setSpeeds(0, 0);    
   }
   else if (Serial1.available() > 0) // Only execute if something is sent through the serial.
   {
@@ -137,15 +137,15 @@ void autonomousControl(char command)
     // Turn the robot to the left 90 degrees.
     case 'l':
       turnLeft();
-      isRunning = false;
-      motors.setSpeeds(0, 0);
+      Serial1.write("Moving \n");      
+      isRunning = true;
       break;
 
     // Turn the robot to the right 90 degrees.
     case 'r':
       turnRight();
-      isRunning = false;
-      motors.setSpeeds(0, 0);
+      Serial1.write("Moving \n");
+      isRunning = true;
       break;
 
     // Swap control schemes for the zumo.
