@@ -1,10 +1,12 @@
 #include <Zumo32U4.h>
 #include "TurnSensor.h"
 #include "LineSensor.h"
+#include "ProximitySensors.h"
 
 Zumo32U4Motors motors;
 Zumo32U4IMU imu;
 Zumo32U4LineSensors lineSensors;
+Zumo32U4ProximitySensors proxSensors;
 
 int moveSpeed = 100;
 int turnSpeed = 85;
@@ -22,6 +24,7 @@ void setup()
   Serial1.begin(9600);
   turnSensorSetup();
   lineSensors.initFiveSensors();
+  proximitySensorSetup();
   calibrateSensors();
 }
 
@@ -99,14 +102,14 @@ void manualControl(char command)
 
     // Turn the robot to the left 90 degrees.
     case 'l':
-      turnLeft();
-      motors.setSpeeds(0, 0);
+      Serial1.write("Turning Left \n");
+      turnLeft90();
       break;
 
     // Turn the robot to the right 90 degrees.
     case 'r':
-      turnRight();
-      motors.setSpeeds(0, 0);
+      Serial1.write("Turning Right \n");
+      turnRight90();
       break;
 
     // Stop all current movement of the robot.
@@ -136,16 +139,32 @@ void autonomousControl(char command)
 
     // Turn the robot to the left 90 degrees.
     case 'l':
-      turnLeft();
+      Serial1.write("Turning Left \n");
+      turnLeft90();
       Serial1.write("Moving \n");      
       isRunning = true;
       break;
 
     // Turn the robot to the right 90 degrees.
     case 'r':
-      turnRight();
+      Serial1.write("Turning Right \n");
+      turnRight90();
       Serial1.write("Moving \n");
       isRunning = true;
+      break;
+
+    // Turn the robot to the left 90 degrees, and then search the room ahead. Turns back the correct direction after leaving the room.
+    case 'q':
+      turnLeft90();
+      searchRoom();
+      turnLeft90();
+      break;
+
+    // Turn the robot to the right 90 degrees, and then search the room ahead. Turns back the correct direction after leaving the room.
+    case 'e':
+      turnRight90();
+      searchRoom();
+      turnRight90();
       break;
 
     // Swap control schemes for the zumo.
@@ -159,31 +178,93 @@ void autonomousControl(char command)
   }
 }
 
+
+//----------------------------------
+//--------Turning Functions---------
+//----------------------------------
 // Execute a 90 degree left turn.
-void turnLeft()
+void turnLeft90()
 {
-  Serial1.write("Turning Left \n");
   turnSensorReset();
   motors.setSpeeds(-turnSpeed, turnSpeed);
   while((int32_t)turnAngle < turnAngle90)
   {
     turnSensorUpdate();
   }
+  motors.setSpeeds(0,0);
+}
+
+// Execute a 45 degree left turn.
+void turnLeft45()
+{
+  turnSensorReset();
+  motors.setSpeeds(-turnSpeed, turnSpeed);
+  while((int32_t)turnAngle < turnAngle45)
+  {
+    turnSensorUpdate();
+  }
+  motors.setSpeeds(0,0);
+}
+
+// Execute a x degree left turn.
+void turnLeft(int x)
+{
+  for (int i = 0; i < x; i++)
+  {
+    turnSensorReset();
+    motors.setSpeeds(-turnSpeed, turnSpeed);
+    while((int32_t)turnAngle < turnAngle1)
+    {
+      turnSensorUpdate();
+    }  
+  }
+  motors.setSpeeds(0,0);
 }
 
 // Execute a 90 degree right turn.
-void turnRight()
+void turnRight90()
 {
-  Serial1.write("Turning Right \n");
   turnSensorReset();
   motors.setSpeeds(turnSpeed, -turnSpeed);
   while((int32_t)turnAngle > -turnAngle90)
   {
     turnSensorUpdate();
   }
+  motors.setSpeeds(0,0);
 }
 
-// Alternates between start and stopped states for the Zumo
+// Execute a 45 degree right turn.
+void turnRight45()
+{
+  turnSensorReset();
+  motors.setSpeeds(turnSpeed, -turnSpeed);
+  while((int32_t)turnAngle > -turnAngle45)
+  {
+    turnSensorUpdate();
+  }
+  motors.setSpeeds(0,0);
+}
+
+// Execute a x degree right turn.
+void turnRight(int x)
+{
+  for (int i = 0; i < x; i++)
+  {
+    turnSensorReset();
+    motors.setSpeeds(turnSpeed, -turnSpeed);
+    while((int32_t)turnAngle > -turnAngle1)
+    {
+      turnSensorUpdate();
+    }
+  }
+  motors.setSpeeds(0,0);
+}
+
+
+//----------------------------------
+//-----Basic Movement Functions-----
+//----------------------------------
+// Alternates between start and stopped states for the Zumo.
 void startStop()
 {
   isRunning = !isRunning;
@@ -196,4 +277,70 @@ void startStop()
     Serial1.write("Stopping \n");
     motors.setSpeeds(0, 0);
   }
+}
+
+// Moves the zumo forward at default speed for x milliseconds.
+void moveForward(int x)
+{
+  motors.setSpeeds(moveSpeed, moveSpeed);
+  delay(x);
+  motors.setSpeeds(0, 0);
+}
+
+
+//----------------------------------
+//-------Searching Functions--------
+//----------------------------------
+// Executes a 90 degree left turn and returns true if anything is detected by the proximity sensors.
+bool turnLeftAndSearch()
+{
+  bool objectDetected = false;
+  for (int i = 0; i < 2; i++)
+  {
+    turnLeft45();
+    objectDetected = readProximitySensors();
+  }
+  return objectDetected;
+}
+
+// Executes a 90 degree right turn and returns true if anything is detected by the proximity sensors.
+bool turnRightAndSearch()
+{
+  bool objectDetected = false;
+  for (int i = 0; i < 2; i++)
+  {
+    turnRight45();
+    objectDetected = readProximitySensors();
+  }
+  return objectDetected;
+}
+
+// Moves into and then subsequently scans the room using the onboard proximity sensors.
+void searchRoom()
+{
+  bool objectDetected = false; // Default to nothing detected when first entering a room;
+
+  // Move into the room.
+  moveForward(500);
+
+  // Turn to the left 90 degrees and see if anything is detected by the proximity sensors.
+  objectDetected = turnLeftAndSearch();
+
+  // Turn back to the right 180 degrees, and see if anything is detected by the proximity sensors.
+  objectDetected = turnRightAndSearch();
+  objectDetected = turnRightAndSearch();
+
+  // Relay through the serial that an object was detected in the current room.
+  if (objectDetected == true)
+  {
+    Serial1.write("Object Detected in Room \n");
+  }
+  else
+  {
+    Serial1.write("Room clear \n");
+  }
+
+  // Turn and exit the room.
+  turnRight90();
+  moveForward(500);
 }

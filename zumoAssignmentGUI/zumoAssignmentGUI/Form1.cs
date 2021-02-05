@@ -52,6 +52,15 @@ namespace zumoAssignmentGUI
         {
             zumoPort.Write("x");
         }
+        private void RoomLeftButton_Click(object sender, EventArgs e)
+        {
+            zumoPort.Write("q");
+        }
+
+        private void RoomRightButton_Click(object sender, EventArgs e)
+        {
+            zumoPort.Write("e");
+        }
 
         private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
