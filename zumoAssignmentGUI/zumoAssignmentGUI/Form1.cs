@@ -21,6 +21,7 @@ namespace zumoAssignmentGUI
             zumoPort.Open();
             zumoPort.DataReceived += new SerialDataReceivedEventHandler(SerialPortDataReceived);
             zumoPort.DtrEnable = true;
+            zumoPort.NewLine = "\n";
         }
 
         private void ForwardButton_Click(object sender, EventArgs e)

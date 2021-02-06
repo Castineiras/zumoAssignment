@@ -6,7 +6,7 @@
 void proximitySensorSetup()
 {
   proxSensors.initThreeSensors();
-  proxSensors.setBrightnessLevels(levels, 5);
+  proxSensors.setBrightnessLevels(levels, 4);
 }
 
 // Read the sensors and see if anything is detected within range.

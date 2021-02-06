@@ -292,6 +292,7 @@ void moveForward(int x)
 //-------Searching Functions--------
 //----------------------------------
 // Executes a 90 degree left turn and returns true if anything is detected by the proximity sensors.
+// Checks the proximity sensors every 45 degrees.
 bool turnLeftAndSearch()
 {
   bool objectDetected = false;
@@ -304,6 +305,7 @@ bool turnLeftAndSearch()
 }
 
 // Executes a 90 degree right turn and returns true if anything is detected by the proximity sensors.
+// Checks the proximity sensors every 45 degrees.
 bool turnRightAndSearch()
 {
   bool objectDetected = false;
