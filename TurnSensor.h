@@ -15,5 +15,5 @@ void turnSensorUpdate();
 extern uint32_t turnAngle;
 extern int16_t turnRate;
 
-// Must define these in sketch.
+// Must define in main sketch.
 extern Zumo32U4IMU imu;

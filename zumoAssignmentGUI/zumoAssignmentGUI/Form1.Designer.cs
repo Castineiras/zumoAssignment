@@ -135,6 +135,7 @@ namespace zumoAssignmentGUI
             this.RoomRightButton.TabIndex = 4;
             this.RoomRightButton.Text = "Room Right";
             this.RoomRightButton.UseVisualStyleBackColor = true;
+            this.RoomRightButton.Click += new System.EventHandler(this.RoomRightButton_Click);
             // 
             // button1
             // 
@@ -154,6 +155,7 @@ namespace zumoAssignmentGUI
             this.RoomLeftButton.TabIndex = 4;
             this.RoomLeftButton.Text = "Room Left";
             this.RoomLeftButton.UseVisualStyleBackColor = true;
+            this.RoomLeftButton.Click += new System.EventHandler(this.RoomLeftButton_Click);
             // 
             // TurnLeftButtonA
             // 
