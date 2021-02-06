@@ -15,6 +15,7 @@ int lineSensorValues[numSensors];
 int currentRoomNumber = 0;
 bool isRunning = false;
 bool isAutonomous = true;
+bool isIgnoringCommands = false;
 
 //----------------------------------
 //--------------Setup---------------
@@ -47,12 +48,26 @@ void loop()
     String commandString = Serial1.readString();
     char command = commandString[0];
 
-    // Check current control scheme
-    if (isAutonomous)
+    // First block should only be executed when checking the other side of the T-Junction.
+    if (isIgnoringCommands)
+    {
+      // Ignore commands until the zumo is asked to turn back down the main corridor.      
+      if(command == 'l' || command == 'r')
+      {
+        isIgnoringCommands = false;
+        Serial1.write("Control Resumed \n");
+      }
+      else
+      {
+        Serial1.write("Ignoring Commands \n");
+      } 
+    }
+    // Check current control scheme     
+    else if (isAutonomous)
     {
       autonomousControl(command); // Autonomous - Main functionality, used for moving through the maze and searching rooms etc.
     }
-    else
+    else 
     {
       manualControl(command); // Manual - Direct manual controls, only really used for Task 1.
     }
@@ -166,6 +181,14 @@ void autonomousControl(char command)
       turnRight90();
       searchRoom();
       turnRight90();
+      break;
+
+    // Turn the robot 180 degrees and search the other side of the T-Junction, ignoring commands until it has passed the main corridor turning.
+    case 'b':
+      turnRight90();
+      turnRight90();
+      isIgnoringCommands = true;
+      isRunning = true;
       break;
 
     // Swap control schemes for the zumo.
