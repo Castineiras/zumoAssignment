@@ -15,6 +15,7 @@ int lineSensorValues[numSensors];
 int currentRoomNumber = 0;
 bool isRunning = false;
 bool isAutonomous = true;
+bool isIgnoringCommands = false;
 
 //----------------------------------
 //--------------Setup---------------
@@ -167,6 +168,13 @@ void autonomousControl(char command)
       searchRoom();
       turnRight90();
       break;
+
+    // Turn the robot 180 degrees and search the other side of the T-Junction, ignoring commands until it has reached it.
+    case 'b':
+      turnRight90();
+      turnRight90();
+      isIgnoringCommands = true;
+      isRunning = true;
 
     // Swap control schemes for the zumo.
     case 'x':

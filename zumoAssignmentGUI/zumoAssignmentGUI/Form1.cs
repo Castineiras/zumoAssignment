@@ -26,27 +26,27 @@ namespace zumoAssignmentGUI
 
         private void ForwardButton_Click(object sender, EventArgs e)
         {
-            zumoPort.Write("forward");
+            zumoPort.Write("f");
         }
 
         private void BackButton_Click(object sender, EventArgs e)
         {
-            zumoPort.Write("back");
+            zumoPort.Write("b");
         }
 
         private void TurnLeftButton_Click(object sender, EventArgs e)
         {
-            zumoPort.Write("left");
+            zumoPort.Write("l");
         }
 
         private void TurnRightButton_Click(object sender, EventArgs e)
         {
-            zumoPort.Write("right");
+            zumoPort.Write("r");
         }
 
         private void StopButton_Click(object sender, EventArgs e)
         {
-            zumoPort.Write("stop");
+            zumoPort.Write("s");
         }
 
         private void SwitchControlButton_Click(object sender, EventArgs e)
@@ -61,6 +61,10 @@ namespace zumoAssignmentGUI
         private void RoomRightButton_Click(object sender, EventArgs e)
         {
             zumoPort.Write("e");
+        }
+        private void EndOfJunctionButton_Click(object sender, EventArgs e)
+        {
+            zumoPort.Write("b");
         }
 
         private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
