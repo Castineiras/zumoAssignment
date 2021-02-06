@@ -66,6 +66,10 @@ namespace zumoAssignmentGUI
         {
             zumoPort.Write("b");
         }
+        private void HomeButton_Click(object sender, EventArgs e)
+        {
+            zumoPort.Write("b");
+        }
 
         private void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
         {

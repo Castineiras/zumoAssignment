@@ -45,6 +45,7 @@ namespace zumoAssignmentGUI
             this.SerialMonitorGroup = new System.Windows.Forms.GroupBox();
             this.SerialTextBox = new System.Windows.Forms.RichTextBox();
             this.EndOfJunctionButton = new System.Windows.Forms.Button();
+            this.HomeButton = new System.Windows.Forms.Button();
             this.ManualControlGroup.SuspendLayout();
             this.AutonomousControlGroup.SuspendLayout();
             this.SerialMonitorGroup.SuspendLayout();
@@ -116,6 +117,7 @@ namespace zumoAssignmentGUI
             // 
             // AutonomousControlGroup
             // 
+            this.AutonomousControlGroup.Controls.Add(this.HomeButton);
             this.AutonomousControlGroup.Controls.Add(this.EndOfJunctionButton);
             this.AutonomousControlGroup.Controls.Add(this.RoomRightButton);
             this.AutonomousControlGroup.Controls.Add(this.button1);
@@ -218,6 +220,16 @@ namespace zumoAssignmentGUI
             this.EndOfJunctionButton.UseVisualStyleBackColor = true;
             this.EndOfJunctionButton.Click += new System.EventHandler(this.EndOfJunctionButton_Click);
             // 
+            // HomeButton
+            // 
+            this.HomeButton.Location = new System.Drawing.Point(356, 100);
+            this.HomeButton.Name = "HomeButton";
+            this.HomeButton.Size = new System.Drawing.Size(150, 75);
+            this.HomeButton.TabIndex = 4;
+            this.HomeButton.Text = "Return Home";
+            this.HomeButton.UseVisualStyleBackColor = true;
+            this.HomeButton.Click += new System.EventHandler(this.HomeButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -254,6 +266,7 @@ namespace zumoAssignmentGUI
         private System.Windows.Forms.GroupBox SerialMonitorGroup;
         private System.Windows.Forms.RichTextBox SerialTextBox;
         private System.Windows.Forms.Button EndOfJunctionButton;
+        private System.Windows.Forms.Button HomeButton;
     }
 }
 

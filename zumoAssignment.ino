@@ -48,8 +48,18 @@ void loop()
     String commandString = Serial1.readString();
     char command = commandString[0];
 
+    // First block should only be executed when checking the other side of the T-Junction.
+    if (isIgnoringCommands)
+    {
+      // Ignore commands until the zumo is asked to turn back down the main corridor.
+      Serial1.write("Ignoring Commands");
+      if(command == 'l' || command == 'r')
+      {
+        isIgnoringCommands = false;
+      }
+    }
     // Check current control scheme
-    if (isAutonomous)
+    else if (isAutonomous)
     {
       autonomousControl(command); // Autonomous - Main functionality, used for moving through the maze and searching rooms etc.
     }
