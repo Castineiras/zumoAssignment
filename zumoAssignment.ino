@@ -12,6 +12,7 @@ int moveSpeed = 100;
 int turnSpeed = 85;
 int lastError = 0;
 int lineSensorValues[numSensors];
+int currentRoomNumber = 0;
 bool isRunning = false;
 bool isAutonomous = true;
 
@@ -321,6 +322,8 @@ bool turnRightAndSearch()
 void searchRoom()
 {
   bool objectDetected = false; // Default to nothing detected when first entering a room;
+  currentRoomNumber++; // Increase the number of the room upon each search (starts at 0).
+  Serial1.print("Searching Room " + String(currentRoomNumber) + "\n");
 
   // Move into the room.
   moveForward(500);
@@ -335,11 +338,11 @@ void searchRoom()
   // Relay through the serial that an object was detected in the current room.
   if (objectDetected == true)
   {
-    Serial1.write("Object Detected in Room \n");
+    Serial1.print("Object Detected in Room " + String(currentRoomNumber) + "\n");
   }
   else
   {
-    Serial1.write("Room clear \n");
+    Serial1.print("Room " + String(currentRoomNumber) + " clear \n");
   }
 
   // Turn and exit the room.
