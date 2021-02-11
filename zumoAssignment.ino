@@ -16,7 +16,7 @@ int turnSpeed = 85;
 int lastError = 0;
 int lineSensorValues[numSensors];
 int currentRoomNumber = 0;
-char lastTurnDirection = 'r';
+char lastTurnDirection;
 bool isRunning = false;
 bool isAutonomous = true;
 bool isIgnoringCommands = false;
@@ -62,7 +62,6 @@ void loop()
     Serial1.write("Corner Detected \n"); // Must have \n at the end, as UI looks for this when receiving messages.
     isRunning = false;
     motors.setSpeeds(0, 0);
-    logPath();
   }
   else if (Serial1.available() > 0) // Only execute if something is sent through the serial.
   {
@@ -161,6 +160,7 @@ void autonomousControl(char command)
       Serial1.write("Moving \n");      
       isRunning = true;
       lastTurnDirection = 'l';
+      logPath(); // Logs path after manual turn as these are only done when at a corner.
       break;
 
     // Turn the robot to the right 90 degrees.
@@ -170,6 +170,7 @@ void autonomousControl(char command)
       Serial1.write("Moving \n");
       isRunning = true;
       lastTurnDirection = 'r';
+      logPath(); // Logs path after manual turn as these are only done when at a corner.
       break;
 
     // Turn the robot to the left 90 degrees, and then search the room ahead. Turns back the correct direction after leaving the room.
