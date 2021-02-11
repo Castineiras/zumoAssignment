@@ -1,4 +1,6 @@
+#include <ArxContainer.h>
 #include <Zumo32U4.h>
+#include <Zumo32U4Encoders.h>
 #include "TurnSensor.h"
 #include "LineSensor.h"
 #include "ProximitySensors.h"
@@ -7,15 +9,32 @@ Zumo32U4Motors motors;
 Zumo32U4IMU imu;
 Zumo32U4LineSensors lineSensors;
 Zumo32U4ProximitySensors proxSensors;
+Zumo32U4Encoders encoders;
 
 int moveSpeed = 100;
 int turnSpeed = 85;
 int lastError = 0;
 int lineSensorValues[numSensors];
 int currentRoomNumber = 0;
+char lastTurnDirection = 'r';
 bool isRunning = false;
 bool isAutonomous = true;
 bool isIgnoringCommands = false;
+
+struct Room
+{
+  int number;
+  bool isClear;
+};
+
+struct Path
+{
+  int distance;
+  char endTurnDirection;
+};
+
+arx::vector<Room> rooms;
+arx::vector<Path> paths;
 
 //----------------------------------
 //--------------Setup---------------
@@ -28,6 +47,7 @@ void setup()
   lineSensors.initFiveSensors();
   proximitySensorSetup();
   calibrateSensors();
+  encoders.init();
 }
 
 
@@ -41,7 +61,8 @@ void loop()
   {
     Serial1.write("Corner Detected \n"); // Must have \n at the end, as UI looks for this when receiving messages.
     isRunning = false;
-    motors.setSpeeds(0, 0);    
+    motors.setSpeeds(0, 0);
+    logPath();
   }
   else if (Serial1.available() > 0) // Only execute if something is sent through the serial.
   {
@@ -74,27 +95,7 @@ void loop()
   }
   else if (isRunning) // isRunning should be true when moving forward autonomously. Keeps the Zumo from travelling outside the boundaries of the maze.
   {
-    // Block of code works by effectively following the white area inside the maze, in order to avoid the boundaries.
-    // Gets the position of the line to be followed.
-    int position = lineSensors.readLine(lineSensorValues, true, true);
-
-    // Error is how far the zumo is from the centre of the line, corresponds to position 2000.
-    int error = position - 2000;
-
-    // Gets the speed difference to be used between each motor, which will decide what direction it should turn.
-    int speedDifference = error / 4 + 6 * (error - lastError);
-    
-    lastError = error;
-
-    // Set the speeds of the left and right motors, taking into account the speed difference.
-    int leftSpeed = moveSpeed + speedDifference;
-    int rightSpeed = moveSpeed - speedDifference;
-
-    // Contrains the motor speeds between 0 and the actual movement speed of the robot normally.
-    leftSpeed = constrain(leftSpeed, 0, moveSpeed);
-    rightSpeed = constrain(rightSpeed, 0, moveSpeed);
-
-    motors.setSpeeds(leftSpeed, rightSpeed);
+    autoMove();
   }
 }
 
@@ -159,6 +160,7 @@ void autonomousControl(char command)
       turnLeft90();
       Serial1.write("Moving \n");      
       isRunning = true;
+      lastTurnDirection = 'l';
       break;
 
     // Turn the robot to the right 90 degrees.
@@ -167,6 +169,7 @@ void autonomousControl(char command)
       turnRight90();
       Serial1.write("Moving \n");
       isRunning = true;
+      lastTurnDirection = 'r';
       break;
 
     // Turn the robot to the left 90 degrees, and then search the room ahead. Turns back the correct direction after leaving the room.
@@ -189,6 +192,10 @@ void autonomousControl(char command)
       turnRight90();
       isIgnoringCommands = true;
       isRunning = true;
+      break;
+
+    case 'h':
+      returnHome();
       break;
 
     // Swap control schemes for the zumo.
@@ -300,6 +307,7 @@ void startStop()
   {
     Serial1.write("Stopping \n");
     motors.setSpeeds(0, 0);
+    logPath();
   }
 }
 
@@ -309,6 +317,32 @@ void moveForward(int x)
   motors.setSpeeds(moveSpeed, moveSpeed);
   delay(x);
   motors.setSpeeds(0, 0);
+}
+
+// Automatically moves the zumo forward, whilst keeping itself within the confines of the maze.
+void autoMove()
+{
+    // This works by effectively following the white area inside the maze, in order to avoid the boundaries.
+    // Gets the position of the line to be followed.
+    int position = lineSensors.readLine(lineSensorValues, true, true);
+
+    // Error is how far the zumo is from the centre of the line, corresponds to position 2000.
+    int error = position - 2000;
+
+    // Gets the speed difference to be used between each motor, which will decide what direction it should turn.
+    int speedDifference = error / 4 + 6 * (error - lastError);
+    
+    lastError = error;
+
+    // Set the speeds of the left and right motors, taking into account the speed difference.
+    int leftSpeed = moveSpeed + speedDifference;
+    int rightSpeed = moveSpeed - speedDifference;
+
+    // Contrains the motor speeds between 0 and the actual movement speed of the robot normally.
+    leftSpeed = constrain(leftSpeed, 0, moveSpeed);
+    rightSpeed = constrain(rightSpeed, 0, moveSpeed);
+
+    motors.setSpeeds(leftSpeed, rightSpeed);
 }
 
 
@@ -358,7 +392,7 @@ void searchRoom()
   objectDetected = turnRightAndSearch();
   objectDetected = turnRightAndSearch();
 
-  // Relay through the serial that an object was detected in the current room.
+  // Relay through the serial if an object was detected in the current room.
   if (objectDetected == true)
   {
     Serial1.print("Object Detected in Room " + String(currentRoomNumber) + "\n");
@@ -371,4 +405,85 @@ void searchRoom()
   // Turn and exit the room.
   turnRight90();
   moveForward(500);
+}
+
+// Creates a new Room structure and adds it to the list of rooms.
+void logRoom(bool c)
+{
+  Room r{};
+  r.number = currentRoomNumber;
+  r.isClear = c;
+
+  rooms.push_back(r);
+}
+
+
+//----------------------------------
+//--------Pathing Functions---------
+//----------------------------------
+// Set of functions related to mapping the path for the zumo's return journey.
+
+// Creates a new Path structure and adds it to the list of paths;
+void logPath()
+{
+  Path p = Path();
+  p.distance = encoders.getCountsAndResetLeft() + encoders.getCountsAndResetRight();
+  p.endTurnDirection = lastTurnDirection;
+  paths.push_back(p);
+}
+
+// Checks whether the zumo has fully travelled the distance for the current path on the return journey.
+bool compareDistances(int pathNo)
+{
+  int currentDistance = encoders.getCountsLeft() + encoders.getCountsRight();
+  int pathDistance = paths[pathNo].distance;
+  
+  if (currentDistance >= pathDistance * 0.99)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+// Takes the zumo back to the starting point of the maze automatically.
+void returnHome()
+{
+  // Says whether or not the zumo has travelled the same amount of distance as the current path length.
+  bool matchedDistance = false;
+  
+  // Spin around 180 degrees before moving.
+  turnRight90();
+  turnRight90();
+  
+  // For each path in the vector, starting from the last.
+  for (int i = paths.size() - 1; i >= 0; i--)
+  {
+    while(matchedDistance == false)
+    {
+      autoMove();
+      matchedDistance = compareDistances(i);
+    }
+
+    if (i != 0)
+    {
+      if (paths[i - 1].endTurnDirection == 'r')
+      {
+        turnLeft90();
+      }
+      else
+      {
+        turnRight90();
+      }
+    }
+
+    encoders.getCountsAndResetLeft();
+    encoders.getCountsAndResetRight();
+    matchedDistance = false;
+  }
+
+  motors.setSpeeds(0, 0);
+  isRunning = false;
 }
