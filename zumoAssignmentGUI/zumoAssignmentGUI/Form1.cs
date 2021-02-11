@@ -52,6 +52,18 @@ namespace zumoAssignmentGUI
         private void SwitchControlButton_Click(object sender, EventArgs e)
         {
             zumoPort.Write("x");
+            ForwardButton.Enabled = !ForwardButton.Enabled;
+            TurnRightButtonM.Enabled = !TurnRightButtonM.Enabled;
+            TurnLeftButtonM.Enabled = !TurnLeftButtonM.Enabled;
+            BackButton.Enabled = !BackButton.Enabled;
+            StopButton.Enabled = !StopButton.Enabled;
+            StartButton.Enabled = !StartButton.Enabled;
+            RoomRightButton.Enabled = !RoomRightButton.Enabled;
+            RoomLeftButton.Enabled = !RoomLeftButton.Enabled;
+            TurnLeftButtonA.Enabled = !TurnLeftButtonA.Enabled;
+            TurnRightButtonA.Enabled = !TurnRightButtonA.Enabled;
+            EndOfJunctionButton.Enabled = !EndOfJunctionButton.Enabled;
+            HomeButton.Enabled = !HomeButton.Enabled;
         }
         private void RoomLeftButton_Click(object sender, EventArgs e)
         {

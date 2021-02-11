@@ -36,16 +36,16 @@ namespace zumoAssignmentGUI
             this.StopButton = new System.Windows.Forms.Button();
             this.ManualControlGroup = new System.Windows.Forms.GroupBox();
             this.AutonomousControlGroup = new System.Windows.Forms.GroupBox();
+            this.HomeButton = new System.Windows.Forms.Button();
+            this.EndOfJunctionButton = new System.Windows.Forms.Button();
             this.RoomRightButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.StartButton = new System.Windows.Forms.Button();
             this.RoomLeftButton = new System.Windows.Forms.Button();
             this.TurnLeftButtonA = new System.Windows.Forms.Button();
             this.TurnRightButtonA = new System.Windows.Forms.Button();
             this.SwitchControlButton = new System.Windows.Forms.Button();
             this.SerialMonitorGroup = new System.Windows.Forms.GroupBox();
             this.SerialTextBox = new System.Windows.Forms.RichTextBox();
-            this.EndOfJunctionButton = new System.Windows.Forms.Button();
-            this.HomeButton = new System.Windows.Forms.Button();
             this.ManualControlGroup.SuspendLayout();
             this.AutonomousControlGroup.SuspendLayout();
             this.SerialMonitorGroup.SuspendLayout();
@@ -53,6 +53,7 @@ namespace zumoAssignmentGUI
             // 
             // ForwardButton
             // 
+            this.ForwardButton.Enabled = false;
             this.ForwardButton.Location = new System.Drawing.Point(165, 17);
             this.ForwardButton.Name = "ForwardButton";
             this.ForwardButton.Size = new System.Drawing.Size(150, 75);
@@ -63,6 +64,7 @@ namespace zumoAssignmentGUI
             // 
             // TurnRightButtonM
             // 
+            this.TurnRightButtonM.Enabled = false;
             this.TurnRightButtonM.Location = new System.Drawing.Point(321, 98);
             this.TurnRightButtonM.Name = "TurnRightButtonM";
             this.TurnRightButtonM.Size = new System.Drawing.Size(150, 75);
@@ -73,6 +75,7 @@ namespace zumoAssignmentGUI
             // 
             // BackButton
             // 
+            this.BackButton.Enabled = false;
             this.BackButton.Location = new System.Drawing.Point(165, 179);
             this.BackButton.Name = "BackButton";
             this.BackButton.Size = new System.Drawing.Size(150, 75);
@@ -83,6 +86,7 @@ namespace zumoAssignmentGUI
             // 
             // TurnLeftButtonM
             // 
+            this.TurnLeftButtonM.Enabled = false;
             this.TurnLeftButtonM.Location = new System.Drawing.Point(9, 98);
             this.TurnLeftButtonM.Name = "TurnLeftButtonM";
             this.TurnLeftButtonM.Size = new System.Drawing.Size(150, 75);
@@ -93,6 +97,7 @@ namespace zumoAssignmentGUI
             // 
             // StopButton
             // 
+            this.StopButton.Enabled = false;
             this.StopButton.Location = new System.Drawing.Point(165, 98);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(150, 75);
@@ -120,7 +125,7 @@ namespace zumoAssignmentGUI
             this.AutonomousControlGroup.Controls.Add(this.HomeButton);
             this.AutonomousControlGroup.Controls.Add(this.EndOfJunctionButton);
             this.AutonomousControlGroup.Controls.Add(this.RoomRightButton);
-            this.AutonomousControlGroup.Controls.Add(this.button1);
+            this.AutonomousControlGroup.Controls.Add(this.StartButton);
             this.AutonomousControlGroup.Controls.Add(this.RoomLeftButton);
             this.AutonomousControlGroup.Controls.Add(this.TurnLeftButtonA);
             this.AutonomousControlGroup.Controls.Add(this.TurnRightButtonA);
@@ -130,6 +135,26 @@ namespace zumoAssignmentGUI
             this.AutonomousControlGroup.TabIndex = 8;
             this.AutonomousControlGroup.TabStop = false;
             this.AutonomousControlGroup.Text = "Autonomous Controls";
+            // 
+            // HomeButton
+            // 
+            this.HomeButton.Location = new System.Drawing.Point(356, 100);
+            this.HomeButton.Name = "HomeButton";
+            this.HomeButton.Size = new System.Drawing.Size(150, 75);
+            this.HomeButton.TabIndex = 4;
+            this.HomeButton.Text = "Return Home";
+            this.HomeButton.UseVisualStyleBackColor = true;
+            this.HomeButton.Click += new System.EventHandler(this.HomeButton_Click);
+            // 
+            // EndOfJunctionButton
+            // 
+            this.EndOfJunctionButton.Location = new System.Drawing.Point(356, 19);
+            this.EndOfJunctionButton.Name = "EndOfJunctionButton";
+            this.EndOfJunctionButton.Size = new System.Drawing.Size(150, 75);
+            this.EndOfJunctionButton.TabIndex = 4;
+            this.EndOfJunctionButton.Text = "End of T-Junction";
+            this.EndOfJunctionButton.UseVisualStyleBackColor = true;
+            this.EndOfJunctionButton.Click += new System.EventHandler(this.EndOfJunctionButton_Click);
             // 
             // RoomRightButton
             // 
@@ -141,15 +166,15 @@ namespace zumoAssignmentGUI
             this.RoomRightButton.UseVisualStyleBackColor = true;
             this.RoomRightButton.Click += new System.EventHandler(this.RoomRightButton_Click);
             // 
-            // button1
+            // StartButton
             // 
-            this.button1.Location = new System.Drawing.Point(100, 179);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(150, 75);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Start/Stop";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.StopButton_Click);
+            this.StartButton.Location = new System.Drawing.Point(100, 179);
+            this.StartButton.Name = "StartButton";
+            this.StartButton.Size = new System.Drawing.Size(150, 75);
+            this.StartButton.TabIndex = 4;
+            this.StartButton.Text = "Start/Stop";
+            this.StartButton.UseVisualStyleBackColor = true;
+            this.StartButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // RoomLeftButton
             // 
@@ -210,26 +235,6 @@ namespace zumoAssignmentGUI
             this.SerialTextBox.TabIndex = 0;
             this.SerialTextBox.Text = "";
             // 
-            // EndOfJunctionButton
-            // 
-            this.EndOfJunctionButton.Location = new System.Drawing.Point(356, 19);
-            this.EndOfJunctionButton.Name = "EndOfJunctionButton";
-            this.EndOfJunctionButton.Size = new System.Drawing.Size(150, 75);
-            this.EndOfJunctionButton.TabIndex = 4;
-            this.EndOfJunctionButton.Text = "End of T-Junction";
-            this.EndOfJunctionButton.UseVisualStyleBackColor = true;
-            this.EndOfJunctionButton.Click += new System.EventHandler(this.EndOfJunctionButton_Click);
-            // 
-            // HomeButton
-            // 
-            this.HomeButton.Location = new System.Drawing.Point(356, 100);
-            this.HomeButton.Name = "HomeButton";
-            this.HomeButton.Size = new System.Drawing.Size(150, 75);
-            this.HomeButton.TabIndex = 4;
-            this.HomeButton.Text = "Return Home";
-            this.HomeButton.UseVisualStyleBackColor = true;
-            this.HomeButton.Click += new System.EventHandler(this.HomeButton_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -258,7 +263,7 @@ namespace zumoAssignmentGUI
         private System.Windows.Forms.GroupBox ManualControlGroup;
         private System.Windows.Forms.GroupBox AutonomousControlGroup;
         private System.Windows.Forms.Button RoomRightButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button StartButton;
         private System.Windows.Forms.Button RoomLeftButton;
         private System.Windows.Forms.Button TurnLeftButtonA;
         private System.Windows.Forms.Button TurnRightButtonA;
