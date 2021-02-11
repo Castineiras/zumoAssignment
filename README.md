@@ -1,5 +1,7 @@
 # Programming 'Things' - Zumo Assignment
 
+Note - All communications to the Zumo will be done through COM port 5, so that must be done for the GUI to work.
+
 ## Required Libraries
 Libraries can be installed for the Arduino IDE by going to “Tools > Manage Libraries” or by using “Ctrl + Shift + I”. The ones used in this project are listed below;
 * Zumo32U4 by Polulu – Version 1.2.0 – For Zumo functionality.
