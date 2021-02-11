@@ -402,12 +402,14 @@ void searchRoom()
     Serial1.print("Room " + String(currentRoomNumber) + " clear \n");
   }
 
+  logRoom(objectDetected);
+  
   // Turn and exit the room.
   turnRight90();
   moveForward(500);
 }
 
-// Creates a new Room structure and adds it to the list of rooms.
+// Creates a new Room structure and adds it to the list of rooms, based on the last room searched.
 void logRoom(bool c)
 {
   Room r{};
@@ -423,7 +425,7 @@ void logRoom(bool c)
 //----------------------------------
 // Set of functions related to mapping the path for the zumo's return journey.
 
-// Creates a new Path structure and adds it to the list of paths;
+// Creates a new Path structure and adds it to the list of paths, based on the last path travelled through the maze.
 void logPath()
 {
   Path p = Path();
@@ -437,7 +439,8 @@ bool compareDistances(int pathNo)
 {
   int currentDistance = encoders.getCountsLeft() + encoders.getCountsRight();
   int pathDistance = paths[pathNo].distance;
-  
+
+  // Gives a small amount of leniency to account for the zumo not travelling perfectly straight each time.
   if (currentDistance >= pathDistance * 0.99)
   {
     return true;
@@ -467,8 +470,10 @@ void returnHome()
       matchedDistance = compareDistances(i);
     }
 
+    // If the zumo isn't on the last path of the return journey.
     if (i != 0)
     {
+      // Turn the opposite direction that the zumo turned when initially travelling through that path of the maze.
       if (paths[i - 1].endTurnDirection == 'r')
       {
         turnLeft90();
